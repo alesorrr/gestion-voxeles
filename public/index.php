@@ -12,24 +12,50 @@ declare(strict_types=1);
 // ------------------------------------------------------------
 //  Configuración y constantes
 // ------------------------------------------------------------
-// NOTA: En estructura plana (InfinityFree), index.php está en htdocs/ (raíz), no en public/
-$rutaConfig = __DIR__ . '/config/config.php';
-if (!is_file($rutaConfig)) {
+// La ubicación de config/ y app/ puede variar según cómo se haya
+// subido el proyecto al hosting:
+//   - Estructura plana (InfinityFree): index.php está en htdocs/ (raíz),
+//     junto a config/ y app/.
+//   - Estructura con public/: index.php está en public/, y config/ y app/
+//     están un nivel más arriba (en la raíz del proyecto).
+// Para que funcione en ambos casos, buscamos la carpeta base que contenga
+// config/config.php probando varias rutas candidatas.
+$basesCandidatas = [
+    __DIR__,               // config/ junto a index.php (estructura plana)
+    dirname(__DIR__),      // config/ un nivel arriba (index.php dentro de public/)
+];
+
+$baseDir     = null;
+$rutaConfig  = null;
+foreach ($basesCandidatas as $base) {
+    if (is_file($base . '/config/config.php')) {
+        $baseDir    = $base;
+        $rutaConfig = $base . '/config/config.php';
+        break;
+    }
+}
+
+if ($rutaConfig === null) {
     http_response_code(500);
-    exit('Falta el archivo config/config.php. Copiá config.example.php y completá los datos.');
+    exit(
+        'Falta el archivo config/config.php. '
+        . 'Copiá config/config.example.php a config/config.php (en la MISMA carpeta '
+        . 'donde está este index.php, o un nivel arriba si usás la carpeta public/) '
+        . 'y completá los datos de conexión a la base de datos.'
+    );
 }
 require $rutaConfig;
 
 // ------------------------------------------------------------
 //  Autoloader PSR-4 simple para el namespace App\
 // ------------------------------------------------------------
-spl_autoload_register(static function (string $clase): void {
+spl_autoload_register(static function (string $clase) use ($baseDir): void {
     $prefijo = 'App\\';
     if (!str_starts_with($clase, $prefijo)) {
         return;
     }
     $relativa = substr($clase, strlen($prefijo));
-    $archivo  = __DIR__ . '/app/' . str_replace('\\', '/', $relativa) . '.php';
+    $archivo  = $baseDir . '/app/' . str_replace('\\', '/', $relativa) . '.php';
     if (is_file($archivo)) {
         require $archivo;
     }
