@@ -36,11 +36,15 @@ Antes de comenzar, asegúrate de tener:
 ### 1.3 Importar el Esquema SQL
 
 1. Abre **phpMyAdmin** desde tu panel de hosting
-2. Selecciona la base de datos que acabas de crear
+2. Selecciona la base de datos que acabas de crear (clic en el nombre en el panel izquierdo)
 3. Haz clic en la pestaña **"Importar"** o **"Import"**
-4. Selecciona el archivo: `database/schema.sql` (de tu proyecto local)
+4. Selecciona el archivo correcto según tu tipo de hosting:
+   - **Hosting compartido (cPanel, InfinityFree, etc.)**: `database/schema_hosting.sql` ⭐ **Recomendado**
+   - **VPS/Servidor dedicado**: `database/schema.sql`
 5. Haz clic en **"Continuar"** o **"Go"**
 6. ✅ **Verifica que se crearon las tablas:** `usuarios`, `clientes`, `estados_orden`, `ordenes_trabajo`, `gastos`, `ingresos`
+
+> ⚠️ **Importante**: Si ves errores sobre "CREATE DATABASE" o "USE", es porque estás usando `schema.sql` en un hosting compartido. Usa `schema_hosting.sql` en su lugar.
 
 ---
 
