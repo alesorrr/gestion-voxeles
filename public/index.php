@@ -12,7 +12,8 @@ declare(strict_types=1);
 // ------------------------------------------------------------
 //  Configuración y constantes
 // ------------------------------------------------------------
-$rutaConfig = dirname(__DIR__) . '/config/config.php';
+// NOTA: En estructura plana (InfinityFree), index.php está en htdocs/ (raíz), no en public/
+$rutaConfig = __DIR__ . '/config/config.php';
 if (!is_file($rutaConfig)) {
     http_response_code(500);
     exit('Falta el archivo config/config.php. Copiá config.example.php y completá los datos.');
@@ -28,7 +29,7 @@ spl_autoload_register(static function (string $clase): void {
         return;
     }
     $relativa = substr($clase, strlen($prefijo));
-    $archivo  = dirname(__DIR__) . '/app/' . str_replace('\\', '/', $relativa) . '.php';
+    $archivo  = __DIR__ . '/app/' . str_replace('\\', '/', $relativa) . '.php';
     if (is_file($archivo)) {
         require $archivo;
     }
