@@ -135,31 +135,11 @@ define('BASE_URL', '');  // ← Dejar así si el dominio apunta a htdocs/
 
 3. **Guarda el archivo**
 
-### 3.3 Modificar public/index.php para Estructura Plana
+### 3.3 Verificar config.php (el index.php ya está ajustado)
 
-Como el `index.php` va a estar en la raíz (no dentro de `public/`), necesitamos ajustar las rutas.
+✅ **Buena noticia**: El archivo `public/index.php` ya viene ajustado del repositorio para funcionar en estructura plana (InfinityFree). No necesitás modificarlo manualmente.
 
-1. Abre `gestion-voxeles/public/index.php`
-2. **Reemplaza las líneas 15-19** (donde dice `$rutaConfig = dirname(__DIR__)...`) con esto:
-
-```php
-// Configuración y constantes
-// NOTA: En InfinityFree, index.php está en htdocs/ (raíz), no en public/
-$rutaConfig = __DIR__ . '/config/config.php';
-if (!is_file($rutaConfig)) {
-    http_response_code(500);
-    exit('Falta el archivo config/config.php. Copiá config.example.php y completá los datos.');
-}
-require $rutaConfig;
-```
-
-3. **Reemplaza la línea 31** (dentro del autoloader, `dirname(__DIR__) . '/app/'`) con:
-
-```php
-$archivo = __DIR__ . '/app/' . str_replace('\\', '/', $relativa) . '.php';
-```
-
-4. **Guarda el archivo**
+Lo único que necesitás es asegurarte de que `config.php` tenga las credenciales correctas (ver paso 3.2 arriba).
 
 ---
 
