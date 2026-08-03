@@ -1,0 +1,15 @@
+# ============================================================
+#  Gestión Voxeles - Reescritura de URLs
+#  Redirige todas las peticiones al front controller en public/
+# ============================================================
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Si la petición no apunta a la carpeta public, la reenviamos allí
+    RewriteRule ^$ public/ [L]
+    RewriteRule (.*) public/$1 [L]
+</IfModule>
+
+# Evitar el listado de directorios
+Options -Indexes

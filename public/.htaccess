@@ -1,0 +1,15 @@
+# ============================================================
+#  Front controller de Gestión Voxeles
+#  Envía todas las rutas inexistentes a index.php
+# ============================================================
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # No reescribir archivos o carpetas que existen (assets, css, js)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Todo lo demás va al front controller
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>
