@@ -14,6 +14,8 @@ $base   = BASE_URL;
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= htmlspecialchars($titulo) ?> · <?= htmlspecialchars(APP_NAME) ?></title>
+    <link rel="icon" type="image/png" href="<?= $base ?>/assets/img/logo_voxeles_FAVICON.png">
+    <link rel="apple-touch-icon" href="<?= $base ?>/assets/img/logo_voxeles_FAVICON.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="<?= $base ?>/assets/css/app.css" rel="stylesheet">

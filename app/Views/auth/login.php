@@ -9,10 +9,8 @@ $base = BASE_URL;
 <div class="auth-card card shadow-lg border-0">
     <div class="card-body p-4 p-md-5">
         <div class="text-center mb-4">
-            <div class="auth-logo mb-2">
-                <i class="bi bi-printer-fill"></i>
-            </div>
-            <h1 class="h4 fw-bold mb-0"><?= htmlspecialchars(APP_NAME) ?></h1>
+            <img src="<?= $base ?>/assets/img/logo_voxeles_transparente.png"
+                 alt="<?= htmlspecialchars(APP_NAME) ?>" class="auth-logo-img mb-3">
             <p class="text-muted small mb-0">Gestión de impresión 3D</p>
         </div>
 

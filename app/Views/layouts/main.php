@@ -25,6 +25,8 @@ $activo = static function (string $ruta) use ($actual, $base): string {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= htmlspecialchars($titulo) ?> · <?= htmlspecialchars(APP_NAME) ?></title>
+    <link rel="icon" type="image/png" href="<?= $base ?>/assets/img/logo_voxeles_FAVICON.png">
+    <link rel="apple-touch-icon" href="<?= $base ?>/assets/img/logo_voxeles_FAVICON.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="<?= $base ?>/assets/css/app.css" rel="stylesheet">
@@ -33,9 +35,9 @@ $activo = static function (string $ruta) use ($actual, $base): string {
 
 <nav class="navbar navbar-expand-lg navbar-dark app-navbar sticky-top">
     <div class="container-fluid">
-        <a class="navbar-brand d-flex align-items-center gap-2" href="<?= $base ?>/">
-            <i class="bi bi-printer-fill fs-4"></i>
-            <span class="fw-bold"><?= htmlspecialchars(APP_NAME) ?></span>
+        <a class="navbar-brand d-flex align-items-center" href="<?= $base ?>/">
+            <img src="<?= $base ?>/assets/img/logo_voxeles_W.png"
+                 alt="<?= htmlspecialchars(APP_NAME) ?>" class="app-navbar-logo">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
             <span class="navbar-toggler-icon"></span>

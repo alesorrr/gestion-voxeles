@@ -11,12 +11,10 @@ $margen = (float) $orden['precio_final'] - (float) $orden['costo_material'];
 
     <!-- Encabezado -->
     <div class="mop-header d-flex justify-content-between align-items-start">
-        <div class="d-flex align-items-center gap-3">
-            <div class="mop-logo"><i class="bi bi-printer-fill"></i></div>
-            <div>
-                <h1 class="mop-title mb-0"><?= htmlspecialchars(APP_NAME) ?></h1>
-                <p class="text-muted mb-0 small">Orden de Trabajo · Impresión 3D</p>
-            </div>
+        <div>
+            <img src="<?= BASE_URL ?>/assets/img/logo_voxeles_web.png"
+                 alt="<?= htmlspecialchars(APP_NAME) ?>" class="mop-logo-img mb-1">
+            <p class="text-muted mb-0 small">Orden de Trabajo · Impresión 3D</p>
         </div>
         <div class="text-end">
             <div class="mop-numero">MOP #<?= str_pad((string) $orden['id'], 4, '0', STR_PAD_LEFT) ?></div>
