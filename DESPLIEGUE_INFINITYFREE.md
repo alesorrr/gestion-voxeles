@@ -75,16 +75,47 @@ Password:       [tu contraseña]
 
 Si todo salió bien, verás un mensaje verde: **"Import has been successfully finished"**
 
-En el panel izquierdo, deberías ver estas 6 tablas:
+En el panel izquierdo, deberías ver estas 7 tablas:
 
 - ✅ `clientes`
 - ✅ `estados_orden`
 - ✅ `gastos`
 - ✅ `ingresos`
 - ✅ `ordenes_trabajo`
+- ✅ `presupuestos`
 - ✅ `usuarios`
 
 **Si NO ves las tablas**, revisa los errores en la pantalla roja de phpMyAdmin.
+
+---
+
+## 🔄 PASO 2-BIS: Actualizar una instalación YA existente (versión 2)
+
+> ⚠️ **Este paso es SOLO para quienes ya tenían la app funcionando** con una versión
+> anterior y ahora quieren incorporar las secciones **Presupuestos** y **Usuarios** y el
+> nuevo diseño. Si es una instalación nueva y ya importaste `schema_hosting.sql`, **saltea
+> este paso** (el esquema nuevo ya incluye todo).
+
+La actualización usa el archivo **`database/migracion_v2.sql`**, que es **no destructivo**:
+solo agrega columnas y tablas nuevas mediante `ALTER TABLE` / `CREATE TABLE IF NOT EXISTS`
+y **conserva todos tus datos existentes** (órdenes, clientes, contabilidad, usuarios).
+
+1. Entra a **phpMyAdmin** y selecciona tu base de datos en el panel izquierdo.
+2. Abre la pestaña **"Import"** (Importar).
+3. Elige el archivo **`database/migracion_v2.sql`**.
+4. Deja las opciones por defecto y haz clic en **"Go"** / **"Continuar"**.
+5. Verás el mensaje verde **"Import has been successfully finished"**.
+
+Qué agrega la migración:
+
+- Rol nuevo **`ventas`** en `usuarios` (para la sección Presupuestos).
+- Materiales **ABS** y **Flex** disponibles en las órdenes.
+- 5 columnas nuevas en `ordenes_trabajo`: `altura_capa`, `cantidad_piezas`,
+  `metodo_contacto`, `fecha_estimada`, `fecha_limite`.
+- La tabla nueva **`presupuestos`** (calculadora de costos de impresión).
+
+Después de importar la migración, **vuelve a subir por FTP los archivos nuevos/cambiados**
+(ver PASO 4). Con eso la app queda actualizada sin perder datos.
 
 ---
 
@@ -345,7 +376,7 @@ define('BASE_URL', '');  // ← Debe estar vacío para raíz
 - [ ] Base de datos creada desde el panel de InfinityFree
 - [ ] Credenciales anotadas (con prefijo `epiz_` y host `sqlXXX.infinityfreeapp.com`)
 - [ ] Archivo `schema_hosting.sql` importado en phpMyAdmin
-- [ ] 6 tablas verificadas en phpMyAdmin
+- [ ] 7 tablas verificadas en phpMyAdmin (incluida `presupuestos`)
 - [ ] `config.php` editado con credenciales exactas de InfinityFree
 - [ ] `public/index.php` modificado para estructura plana (rutas ajustadas)
 - [ ] `BASE_URL` configurado como cadena vacía `''`

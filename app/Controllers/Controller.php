@@ -66,4 +66,27 @@ abstract class Controller
             $this->redirigir('/login');
         }
     }
+
+    /**
+     * Devuelve el rol del usuario actual ('admin', 'operador', 'ventas').
+     */
+    protected function rol(): string
+    {
+        return (string) ($_SESSION['usuario_rol'] ?? '');
+    }
+
+    /**
+     * Exige que el usuario tenga uno de los roles indicados.
+     * Si no lo tiene, lo redirige al panel principal.
+     *
+     * @param array<int, string> $roles
+     */
+    protected function exigirRol(array $roles): void
+    {
+        $this->exigirAuth();
+        if (!in_array($this->rol(), $roles, true)) {
+            http_response_code(403);
+            $this->redirigir('/');
+        }
+    }
 }

@@ -6,6 +6,34 @@ declare(strict_types=1);
  */
 $base = BASE_URL;
 $fmt = static fn (float $n): string => MONEDA . ' ' . number_format($n, 2, ',', '.');
+
+/**
+ * Devuelve [clase de color, etiqueta] para la fecha límite según los días restantes.
+ * Rojo = vencida o vence hoy/mañana · Amarillo = ≤3 días · Verde = más lejos.
+ */
+$chipLimite = static function (?string $fecha): array {
+    if (empty($fecha) || $fecha === '0000-00-00') {
+        return ['neutral', '—'];
+    }
+    try {
+        $hoy   = new DateTime('today');
+        $lim   = new DateTime($fecha);
+        $dias  = (int) $hoy->diff($lim)->format('%r%a');
+    } catch (\Throwable $e) {
+        return ['neutral', '—'];
+    }
+    $etiqueta = $lim->format('d/m/Y');
+    if ($dias < 0) {
+        return ['rojo', $etiqueta . ' · vencida'];
+    }
+    if ($dias <= 1) {
+        return ['rojo', $etiqueta];
+    }
+    if ($dias <= 3) {
+        return ['amarillo', $etiqueta];
+    }
+    return ['verde', $etiqueta];
+};
 ?>
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
@@ -27,6 +55,7 @@ $fmt = static fn (float $n): string => MONEDA . ' ' . number_format($n, 2, ',', 
                     <th>Cliente</th>
                     <th>Material</th>
                     <th>Estado</th>
+                    <th>Fecha límite</th>
                     <th class="text-end">Precio</th>
                     <th>Pago</th>
                     <th class="text-end">Acciones</th>
@@ -34,7 +63,7 @@ $fmt = static fn (float $n): string => MONEDA . ' ' . number_format($n, 2, ',', 
             </thead>
             <tbody>
             <?php if (empty($ordenes)): ?>
-                <tr><td colspan="8" class="text-center text-muted py-5">
+                <tr><td colspan="9" class="text-center text-muted py-5">
                     No hay órdenes todavía.
                     <a href="<?= $base ?>/ordenes/nueva">Creá la primera</a>.
                 </td></tr>
@@ -49,6 +78,10 @@ $fmt = static fn (float $n): string => MONEDA . ' ' . number_format($n, 2, ',', 
                             <span class="badge" style="background-color: <?= htmlspecialchars((string) $o['estado_color']) ?>">
                                 <?= htmlspecialchars((string) $o['estado_nombre']) ?>
                             </span>
+                        </td>
+                        <td>
+                            <?php [$clr, $lbl] = $chipLimite($o['fecha_limite'] ?? null); ?>
+                            <span class="chip-limite chip-<?= $clr ?>"><?= htmlspecialchars($lbl) ?></span>
                         </td>
                         <td class="text-end"><?= $fmt((float) $o['precio_final']) ?></td>
                         <td>

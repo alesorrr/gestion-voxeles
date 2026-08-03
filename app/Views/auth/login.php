@@ -9,9 +9,8 @@ $base = BASE_URL;
 <div class="auth-card card shadow-lg border-0">
     <div class="card-body p-4 p-md-5">
         <div class="text-center mb-4">
-            <img src="<?= $base ?>/assets/img/logo_voxeles_transparente.png"
-                 alt="<?= htmlspecialchars(APP_NAME) ?>" class="auth-logo-img mb-3">
-            <p class="text-muted small mb-0">Gestión de impresión 3D</p>
+            <h1 class="auth-title mb-0">Bienvenido!</h1>
+            <p class="auth-subtitle mb-0">APP Gestión Voxeles</p>
         </div>
 
         <?php if (!empty($error)): ?>
@@ -23,28 +22,14 @@ $base = BASE_URL;
 
         <form method="post" action="<?= $base ?>/login" autocomplete="off">
             <div class="mb-3">
-                <label for="usuario" class="form-label">Usuario</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-person"></i></span>
-                    <input type="text" class="form-control" id="usuario" name="usuario"
-                           placeholder="admin" required autofocus>
-                </div>
+                <input type="text" class="form-control form-control-lg" id="usuario" name="usuario"
+                       placeholder="Usuario" required autofocus>
             </div>
             <div class="mb-4">
-                <label for="password" class="form-label">Contraseña</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                    <input type="password" class="form-control" id="password" name="password"
-                           placeholder="••••••••" required>
-                </div>
+                <input type="password" class="form-control form-control-lg" id="password" name="password"
+                       placeholder="Contraseña" required>
             </div>
-            <button type="submit" class="btn btn-primary w-100">
-                <i class="bi bi-box-arrow-in-right me-1"></i>Ingresar
-            </button>
+            <button type="submit" class="btn btn-acceder btn-lg w-100">Acceder</button>
         </form>
-
-        <p class="text-center text-muted small mt-4 mb-0">
-            Credenciales por defecto: <code>admin</code> / <code>admin123</code>
-        </p>
     </div>
 </div>

@@ -8,7 +8,110 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         inicializarKanban();
+        inicializarCalculadora();
     });
+
+    /* ========================================================
+       Calculadora de costos de presupuestos (en vivo)
+       Refleja la fórmula de App\Models\Presupuesto::calcular()
+       ======================================================== */
+    function inicializarCalculadora() {
+        const form = document.getElementById('formPresupuesto');
+        if (!form) {
+            return;
+        }
+
+        const moneda = (typeof window.VX_MONEDA === 'string' && window.VX_MONEDA) ? window.VX_MONEDA : '$';
+
+        const num = function (name) {
+            const el = form.querySelector('[name="' + name + '"]');
+            if (!el) {
+                return 0;
+            }
+            const val = parseFloat(el.value);
+            return isNaN(val) ? 0 : val;
+        };
+
+        const fmt = function (n) {
+            return moneda + ' ' + Number(n).toLocaleString('es-UY', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        };
+
+        const setTxt = function (id, valor) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.textContent = valor;
+            }
+        };
+
+        function recalcular() {
+            const costoKg      = num('costo_kg');
+            const pesoG        = num('peso_g');
+            const tImpresion   = num('tiempo_impresion_hs');
+            const tManoObraMin = num('tiempo_mano_obra_min');
+            const manoObraHora = num('costo_mano_obra_hora');
+            const maquinaHora  = num('costo_maquina_hora');
+            const potenciaW    = num('potencia_w');
+            const precioKwh    = num('precio_kwh');
+            const hardware     = num('costo_hardware');
+            const embalaje     = num('costo_embalaje');
+            let cantidad       = parseInt(num('cantidad'), 10);
+            if (isNaN(cantidad) || cantidad < 1) {
+                cantidad = 1;
+            }
+            const margen       = num('margen_porcentaje');
+            const iva          = num('iva_porcentaje');
+
+            // Por unidad
+            const material     = (costoKg / 1000) * pesoG;
+            const electricidad = (potenciaW / 1000) * tImpresion * precioKwh;
+            const maquina      = maquinaHora * tImpresion;
+            const manoObra     = manoObraHora * (tManoObraMin / 60);
+            const unit         = material + electricidad + maquina + manoObra + hardware + embalaje;
+
+            // Totales (× cantidad)
+            const costoTotal   = unit * cantidad;
+            const precioSinIva = costoTotal * (1 + margen / 100);
+            const precioFinal  = precioSinIva * (1 + iva / 100);
+
+            setTxt('brk_material', fmt(material * cantidad));
+            setTxt('brk_electricidad', fmt(electricidad * cantidad));
+            setTxt('brk_maquina', fmt(maquina * cantidad));
+            setTxt('brk_mano', fmt(manoObra * cantidad));
+            setTxt('brk_hardware', fmt(hardware * cantidad));
+            setTxt('brk_embalaje', fmt(embalaje * cantidad));
+            setTxt('brk_total', fmt(costoTotal));
+            setTxt('brk_precio', fmt(precioFinal));
+            setTxt('brk_precio_unit', cantidad > 1
+                ? (fmt(precioFinal / cantidad) + ' por unidad · ' + cantidad + ' u.')
+                : '');
+        }
+
+        // Recalcular ante cualquier cambio en los campos .calc
+        form.querySelectorAll('.calc').forEach(function (input) {
+            input.addEventListener('input', recalcular);
+            input.addEventListener('change', recalcular);
+        });
+
+        // Botones de margen sugerido
+        form.querySelectorAll('.btn-margen').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                const inp = document.getElementById('inpMargen');
+                if (inp) {
+                    inp.value = btn.dataset.m;
+                    recalcular();
+                }
+                form.querySelectorAll('.btn-margen').forEach(function (b) {
+                    b.classList.remove('active');
+                });
+                btn.classList.add('active');
+            });
+        });
+
+        recalcular();
+    }
 
     /**
      * Inicializa el tablero Kanban si está presente en la página.

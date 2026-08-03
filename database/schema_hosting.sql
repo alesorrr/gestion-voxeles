@@ -20,7 +20,7 @@ CREATE TABLE `usuarios` (
     `nombre`        VARCHAR(120) NOT NULL,
     `usuario`       VARCHAR(60)  NOT NULL,
     `password_hash` VARCHAR(255) NOT NULL,
-    `rol`           ENUM('admin','operador') NOT NULL DEFAULT 'admin',
+    `rol`           ENUM('admin','operador','ventas') NOT NULL DEFAULT 'admin',
     `activo`        TINYINT(1)   NOT NULL DEFAULT 1,
     `creado_en`     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
@@ -68,11 +68,16 @@ CREATE TABLE `ordenes_trabajo` (
     `estado_id`          INT UNSIGNED NOT NULL,
     `nombre_proyecto`    VARCHAR(180) NOT NULL,
     `archivo_3d`         VARCHAR(255) DEFAULT NULL,
-    `material`           ENUM('PLA','PETG','ASA','TPU','Resina','Nylon','Otro') NOT NULL DEFAULT 'PLA',
+    `material`           ENUM('PLA','PETG','ASA','ABS','TPU','Flex','Resina','Nylon','Otro') NOT NULL DEFAULT 'PLA',
     `color`              VARCHAR(60)  DEFAULT NULL,
     `peso_estimado_g`    DECIMAL(10,2) NOT NULL DEFAULT 0,
     `tiempo_estimado_hs` DECIMAL(10,2) NOT NULL DEFAULT 0,
     `infill_porcentaje`  TINYINT UNSIGNED NOT NULL DEFAULT 20,
+    `altura_capa`        DECIMAL(4,2) NOT NULL DEFAULT 0.20,
+    `cantidad_piezas`    INT UNSIGNED NOT NULL DEFAULT 1,
+    `metodo_contacto`    VARCHAR(120) DEFAULT NULL,
+    `fecha_estimada`     DATE         DEFAULT NULL,
+    `fecha_limite`       DATE         DEFAULT NULL,
     `costo_material`     DECIMAL(12,2) NOT NULL DEFAULT 0,
     `precio_final`       DECIMAL(12,2) NOT NULL DEFAULT 0,
     `pagado`             TINYINT(1)   NOT NULL DEFAULT 0,
@@ -121,6 +126,47 @@ CREATE TABLE `ingresos` (
     KEY `idx_ingresos_fecha` (`fecha`),
     KEY `idx_ingresos_orden` (`orden_id`),
     CONSTRAINT `fk_ingresos_orden` FOREIGN KEY (`orden_id`)
+        REFERENCES `ordenes_trabajo` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+--  Tabla: presupuestos (calculadora de costos de impresión 3D)
+-- ------------------------------------------------------------
+DROP TABLE IF EXISTS `presupuestos`;
+CREATE TABLE `presupuestos` (
+    `id`                   INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `nombre_pieza`         VARCHAR(180) NOT NULL,
+    `cliente_id`           INT UNSIGNED DEFAULT NULL,
+    `material`             ENUM('PLA','PETG','ASA','ABS','TPU','Flex','Resina','Nylon','Otro') NOT NULL DEFAULT 'PLA',
+    `costo_kg`             DECIMAL(12,2) NOT NULL DEFAULT 0,
+    `peso_g`               DECIMAL(10,2) NOT NULL DEFAULT 0,
+    `tiempo_impresion_hs`  DECIMAL(10,2) NOT NULL DEFAULT 0,
+    `tiempo_mano_obra_min` DECIMAL(10,2) NOT NULL DEFAULT 0,
+    `costo_mano_obra_hora` DECIMAL(12,2) NOT NULL DEFAULT 0,
+    `costo_maquina_hora`   DECIMAL(12,2) NOT NULL DEFAULT 0,
+    `potencia_w`           DECIMAL(10,2) NOT NULL DEFAULT 0,
+    `precio_kwh`           DECIMAL(10,4) NOT NULL DEFAULT 0,
+    `costo_hardware`       DECIMAL(12,2) NOT NULL DEFAULT 0,
+    `costo_embalaje`       DECIMAL(12,2) NOT NULL DEFAULT 0,
+    `cantidad`             INT UNSIGNED NOT NULL DEFAULT 1,
+    `margen_porcentaje`    DECIMAL(6,2) NOT NULL DEFAULT 40,
+    `iva_porcentaje`       DECIMAL(6,2) NOT NULL DEFAULT 0,
+    `costo_material`       DECIMAL(12,2) NOT NULL DEFAULT 0,
+    `costo_electricidad`   DECIMAL(12,2) NOT NULL DEFAULT 0,
+    `costo_maquina`        DECIMAL(12,2) NOT NULL DEFAULT 0,
+    `costo_mano_obra`      DECIMAL(12,2) NOT NULL DEFAULT 0,
+    `costo_total`          DECIMAL(12,2) NOT NULL DEFAULT 0,
+    `precio_final`         DECIMAL(12,2) NOT NULL DEFAULT 0,
+    `notas`                TEXT         DEFAULT NULL,
+    `orden_id`             INT UNSIGNED DEFAULT NULL,
+    `creado_en`            TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `actualizado_en`       TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `idx_presupuestos_cliente` (`cliente_id`),
+    KEY `idx_presupuestos_orden` (`orden_id`),
+    CONSTRAINT `fk_presupuestos_cliente` FOREIGN KEY (`cliente_id`)
+        REFERENCES `clientes` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_presupuestos_orden` FOREIGN KEY (`orden_id`)
         REFERENCES `ordenes_trabajo` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

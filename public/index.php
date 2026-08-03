@@ -63,6 +63,8 @@ use App\Controllers\DashboardController;
 use App\Controllers\OrdenesController;
 use App\Controllers\KanbanController;
 use App\Controllers\ContabilidadController;
+use App\Controllers\PresupuestosController;
+use App\Controllers\UsuariosController;
 
 try {
     despachar($segmentos, $metodo);
@@ -102,6 +104,16 @@ function despachar(array $s, string $metodo): void
         // -------- Órdenes de trabajo --------
         case 'ordenes':
             enrutarOrdenes($s, $metodo);
+            return;
+
+        // -------- Presupuestos --------
+        case 'presupuestos':
+            enrutarPresupuestos($s, $metodo);
+            return;
+
+        // -------- Usuarios --------
+        case 'usuarios':
+            enrutarUsuarios($s, $metodo);
             return;
 
         // -------- Kanban --------
@@ -196,6 +208,127 @@ function enrutarOrdenes(array $s, string $metodo): void
                 $ctrl->update($id);
             } else {
                 $ctrl->mop($id);
+            }
+            return;
+        default:
+            http_response_code(404);
+            echo '<h1>404 - Acción no encontrada</h1>';
+    }
+}
+
+/**
+ * Sub-enrutador para el módulo de presupuestos.
+ *
+ * Rutas soportadas:
+ *   GET  /presupuestos                 -> index
+ *   POST /presupuestos                 -> store
+ *   GET  /presupuestos/nuevo           -> create
+ *   GET  /presupuestos/{id}/editar     -> edit
+ *   POST /presupuestos/{id}            -> update
+ *   GET  /presupuestos/{id}/eliminar   -> delete
+ *   GET  /presupuestos/{id}/convertir  -> convertir
+ *
+ * @param array<int, string> $s
+ */
+function enrutarPresupuestos(array $s, string $metodo): void
+{
+    $ctrl = new PresupuestosController();
+
+    // /presupuestos
+    if (!isset($s[1])) {
+        if ($metodo === 'POST') {
+            $ctrl->store();
+        } else {
+            $ctrl->index();
+        }
+        return;
+    }
+
+    // /presupuestos/nuevo
+    if ($s[1] === 'nuevo') {
+        $ctrl->create();
+        return;
+    }
+
+    // /presupuestos/{id}/...
+    $id = (int) $s[1];
+    if ($id <= 0) {
+        http_response_code(404);
+        echo '<h1>404 - Presupuesto no encontrado</h1>';
+        return;
+    }
+
+    $accion = $s[2] ?? '';
+    switch ($accion) {
+        case 'editar':
+            $ctrl->edit($id);
+            return;
+        case 'eliminar':
+            $ctrl->delete($id);
+            return;
+        case 'convertir':
+            $ctrl->convertir($id);
+            return;
+        case '':
+            if ($metodo === 'POST') {
+                $ctrl->update($id);
+            } else {
+                $ctrl->edit($id);
+            }
+            return;
+        default:
+            http_response_code(404);
+            echo '<h1>404 - Acción no encontrada</h1>';
+    }
+}
+
+/**
+ * Sub-enrutador para el módulo de usuarios (solo admin).
+ *
+ * Rutas soportadas:
+ *   GET  /usuarios                   -> index (lista + formulario)
+ *   POST /usuarios                   -> store
+ *   POST /usuarios/{id}              -> update
+ *   GET  /usuarios/{id}/eliminar     -> delete
+ *   GET  /usuarios/{id}/estado       -> toggle activo
+ *
+ * @param array<int, string> $s
+ */
+function enrutarUsuarios(array $s, string $metodo): void
+{
+    $ctrl = new UsuariosController();
+
+    // /usuarios
+    if (!isset($s[1])) {
+        if ($metodo === 'POST') {
+            $ctrl->store();
+        } else {
+            $ctrl->index();
+        }
+        return;
+    }
+
+    // /usuarios/{id}/...
+    $id = (int) $s[1];
+    if ($id <= 0) {
+        http_response_code(404);
+        echo '<h1>404 - Usuario no encontrado</h1>';
+        return;
+    }
+
+    $accion = $s[2] ?? '';
+    switch ($accion) {
+        case 'eliminar':
+            $ctrl->delete($id);
+            return;
+        case 'estado':
+            $ctrl->toggle($id);
+            return;
+        case '':
+            if ($metodo === 'POST') {
+                $ctrl->update($id);
+            } else {
+                $ctrl->index();
             }
             return;
         default:

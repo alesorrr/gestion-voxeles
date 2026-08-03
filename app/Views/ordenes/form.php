@@ -15,7 +15,7 @@ $v = static function (string $campo, $def = '') use ($orden) {
     return htmlspecialchars((string) ($orden[$campo] ?? $def));
 };
 
-$materiales = ['PLA', 'PETG', 'ASA', 'TPU', 'Resina', 'Nylon', 'Otro'];
+$materiales = ['PLA', 'PETG', 'ASA', 'ABS', 'TPU', 'Flex', 'Resina', 'Nylon', 'Otro'];
 ?>
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0"><?= $esEdicion ? 'Editar orden #' . (int) $orden['id'] : 'Nueva orden de trabajo' ?></h1>
@@ -58,6 +58,18 @@ $materiales = ['PLA', 'PETG', 'ASA', 'TPU', 'Resina', 'Nylon', 'Otro'];
                         <label class="form-label">Color</label>
                         <input type="text" name="color" class="form-control" placeholder="Negro, Rojo…" value="<?= $v('color') ?>">
                     </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Método de contacto</label>
+                        <input type="text" name="metodo_contacto" class="form-control" placeholder="WhatsApp, Email, Instagram…" value="<?= $v('metodo_contacto') ?>">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Fecha estimada</label>
+                        <input type="date" name="fecha_estimada" class="form-control" value="<?= $v('fecha_estimada') ?>">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Fecha límite</label>
+                        <input type="date" name="fecha_limite" class="form-control" value="<?= $v('fecha_limite') ?>">
+                    </div>
                     <div class="col-12">
                         <label class="form-label">Notas</label>
                         <textarea name="notas" class="form-control" rows="3"><?= $v('notas') ?></textarea>
@@ -89,6 +101,14 @@ $materiales = ['PLA', 'PETG', 'ASA', 'TPU', 'Resina', 'Nylon', 'Otro'];
                     <div class="col-md-4">
                         <label class="form-label">Relleno / Infill (%)</label>
                         <input type="number" step="1" min="0" max="100" name="infill_porcentaje" class="form-control" value="<?= $v('infill_porcentaje', '20') ?>">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Altura de capa (mm)</label>
+                        <input type="number" step="0.01" min="0" name="altura_capa" class="form-control" value="<?= $v('altura_capa', '0.20') ?>">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Cantidad de piezas</label>
+                        <input type="number" step="1" min="1" name="cantidad_piezas" class="form-control" value="<?= $v('cantidad_piezas', '1') ?>">
                     </div>
                 </div>
             </div>

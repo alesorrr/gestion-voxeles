@@ -16,6 +16,8 @@ Sin dependencias externas (no requiere Composer).
 - **MOP imprimible:** vista limpia con `@media print` lista para imprimir en el taller (encabezado, cliente, detalles técnicos, tabla de costos y espacio para firmas).
 - **Tablero Kanban:** 6 columnas (Pendiente/Presupuestado → En Cola → Imprimiendo → Post-procesamiento → Listo/Enviado → Completado/Pagado) con drag & drop y guardado por AJAX.
 - **Contabilidad:** ingresos automáticos al marcar una orden como pagada (o moverla a "Completado/Pagado"), registro manual de gastos por categoría, tarjetas de resumen y filtros por rango de fechas.
+- **Presupuestos (calculadora de costos):** calculadora de costos de impresión 3D (material, electricidad, hora de máquina, mano de obra, hardware y embalaje) con cálculo en vivo, márgenes por niveles (Competitivo / Estándar / Premium / Lujo) e IVA. Un presupuesto puede convertirse en orden de trabajo con un clic.
+- **Usuarios:** alta/edición/baja de usuarios y roles (solo administradores). Roles disponibles: **Administrador**, **Operario** y **Usuario Ventas**, con menú y permisos según el rol.
 - **Login básico** usuario/contraseña con contraseñas hasheadas (`password_hash`).
 
 ---
@@ -113,6 +115,17 @@ de la raíz redirige automáticamente hacia `public/`.
 > php -r "echo password_hash('tu_nueva_clave', PASSWORD_DEFAULT), PHP_EOL;"
 > ```
 > y actualizá el campo `password_hash` del usuario en la tabla `usuarios`.
+>
+> A partir de la versión 2 también podés crear y administrar usuarios desde la
+> propia app en **`/usuarios`** (solo el rol Administrador), sin tocar la base de datos.
+
+### Roles
+
+| Rol | Etiqueta en la app | Acceso |
+|-----|--------------------|--------|
+| `admin` | Administrador | Todo (incluye Usuarios y Contabilidad) |
+| `ventas` | Usuario Ventas | Panel, Órdenes, Kanban y Presupuestos |
+| `operador` | Operario | Panel y Tablero Kanban |
 
 ---
 
@@ -147,6 +160,10 @@ gestion-voxeles/
 | `/ordenes/{id}/mop` | MOP imprimible |
 | `/kanban` | Tablero Kanban |
 | `/contabilidad` | Dashboard financiero |
+| `/presupuestos` | Listado de presupuestos |
+| `/presupuestos/nuevo` | Calculadora / crear presupuesto |
+| `/presupuestos/{id}/convertir` | Convertir presupuesto en orden |
+| `/usuarios` | Gestión de usuarios (solo admin) |
 
 ---
 

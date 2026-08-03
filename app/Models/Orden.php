@@ -85,10 +85,12 @@ final class Orden
         $sql = 'INSERT INTO ordenes_trabajo
                     (cliente_id, estado_id, nombre_proyecto, archivo_3d, material, color,
                      peso_estimado_g, tiempo_estimado_hs, infill_porcentaje,
+                     altura_capa, cantidad_piezas, metodo_contacto, fecha_estimada, fecha_limite,
                      costo_material, precio_final, pagado, fecha_pago, notas)
                 VALUES
                     (:cliente_id, :estado_id, :nombre_proyecto, :archivo_3d, :material, :color,
                      :peso_estimado_g, :tiempo_estimado_hs, :infill_porcentaje,
+                     :altura_capa, :cantidad_piezas, :metodo_contacto, :fecha_estimada, :fecha_limite,
                      :costo_material, :precio_final, :pagado, :fecha_pago, :notas)';
         $stmt = $this->db->prepare($sql);
         $stmt->execute($this->normalizar($d));
@@ -119,7 +121,10 @@ final class Orden
                     nombre_proyecto = :nombre_proyecto, archivo_3d = :archivo_3d,
                     material = :material, color = :color,
                     peso_estimado_g = :peso_estimado_g, tiempo_estimado_hs = :tiempo_estimado_hs,
-                    infill_porcentaje = :infill_porcentaje, costo_material = :costo_material,
+                    infill_porcentaje = :infill_porcentaje, altura_capa = :altura_capa,
+                    cantidad_piezas = :cantidad_piezas, metodo_contacto = :metodo_contacto,
+                    fecha_estimada = :fecha_estimada, fecha_limite = :fecha_limite,
+                    costo_material = :costo_material,
                     precio_final = :precio_final, pagado = :pagado,
                     fecha_pago = :fecha_pago, notas = :notas
                 WHERE id = :id';
@@ -328,6 +333,11 @@ final class Orden
             'peso_estimado_g'    => (float) ($d['peso_estimado_g'] ?? 0),
             'tiempo_estimado_hs' => (float) ($d['tiempo_estimado_hs'] ?? 0),
             'infill_porcentaje'  => (int) ($d['infill_porcentaje'] ?? 20),
+            'altura_capa'        => (float) ($d['altura_capa'] ?? 0.20),
+            'cantidad_piezas'    => max(1, (int) ($d['cantidad_piezas'] ?? 1)),
+            'metodo_contacto'    => ($d['metodo_contacto'] ?? null) !== '' ? ($d['metodo_contacto'] ?? null) : null,
+            'fecha_estimada'     => !empty($d['fecha_estimada']) ? (string) $d['fecha_estimada'] : null,
+            'fecha_limite'       => !empty($d['fecha_limite']) ? (string) $d['fecha_limite'] : null,
             'costo_material'     => (float) ($d['costo_material'] ?? 0),
             'precio_final'       => (float) ($d['precio_final'] ?? 0),
             'pagado'             => $pagado,
