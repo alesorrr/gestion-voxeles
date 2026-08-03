@@ -58,9 +58,8 @@ $puedeCrearOrden = in_array($rol, ['admin', 'ventas'], true);
 <!-- ===================== NAVBAR SUPERIOR ===================== -->
 <nav class="navbar app-navbar sticky-top">
     <div class="container-fluid px-3 px-lg-4">
-        <a class="navbar-brand d-flex align-items-center" href="<?= $base ?>/">
-            <img src="<?= $base ?>/assets/img/logo_voxeles_W.png"
-                 alt="<?= htmlspecialchars(APP_NAME) ?>" class="app-navbar-logo">
+        <a class="navbar-brand" href="<?= $base ?>/">
+            <?= htmlspecialchars(APP_NAME) ?>
         </a>
 
         <!-- Info de usuario (escritorio) -->

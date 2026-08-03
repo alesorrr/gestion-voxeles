@@ -24,9 +24,8 @@ $base   = BASE_URL;
 
 <nav class="navbar app-navbar">
     <div class="container-fluid px-3 px-lg-4">
-        <a class="navbar-brand d-flex align-items-center" href="<?= $base ?>/login">
-            <img src="<?= $base ?>/assets/img/logo_voxeles_W.png"
-                 alt="<?= htmlspecialchars(APP_NAME) ?>" class="app-navbar-logo">
+        <a class="navbar-brand" href="<?= $base ?>/login">
+            <?= htmlspecialchars(APP_NAME) ?>
         </a>
         <div class="d-flex align-items-center gap-2 text-white ms-auto">
             <span class="small">Acceder</span>
